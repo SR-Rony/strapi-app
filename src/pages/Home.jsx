@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
     const [data,setData]=useState([])
@@ -8,7 +9,7 @@ const Home = () => {
         async function mainData (){
             let projectInfo = await axios.get("http://localhost:1337/api/portfolios?populate=*")
             setData(projectInfo.data.data);
-            console.log(projectInfo.data.data);
+            // console.log(projectInfo.data.data);
         }
         mainData()
     },[])
@@ -18,9 +19,14 @@ const Home = () => {
         {data.map((item)=>(
             <div>
                 <h1>{item.attributes.title}</h1>
-                {item.attributes.images.data.map((imgItem)=>(
-                    <img src={imgItem[0].attributes.src} alt="img" />
-                ))}
+                {item.attributes.images.data.map((imgItem)=><div>
+                    <Link to={`/post/${item.id}`}>
+                        <img src={`http://localhost:1337${imgItem.attributes.url}`} alt="img" />
+                    </Link>
+                </div>)}
+                {item.attributes.description.map((itm)=><div>
+                    {itm.children.map((txt)=><p>{txt.text}</p>)}
+                </div>)}
             </div>
         ))}
     </>
